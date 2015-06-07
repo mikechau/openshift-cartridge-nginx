@@ -10,6 +10,17 @@ NGINX_EXEC=${OPENSHIFT_NGINX_VERSION_DIR}/sbin/nginx
 NGINX_CONFIG_FILE=${OPENSHIFT_NGINX_DIR}/conf/nginx.conf
 NGINX_HTTP_CONFIG_FILE=${OPENSHIFT_NGINX_DIR}/conf/nginx_http.conf
 
+
+# Checks for the presence of the user-specified hot_deploy marker in the app
+# repo. Returns 0 if the marker is present, otherwise 1.
+function hot_deploy_marker_is_present {
+  if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/hot_deploy" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 function isrunning() {
     if [ -f "${OPENSHIFT_NGINX_PID}" ]; then
         local pid=`cat ${OPENSHIFT_NGINX_PID} 2> /dev/null`
@@ -53,13 +64,22 @@ function _nginx_start() {
     fi
 }
 
+function _nginx_reload() {
+    if ! isrunning; then
+       _nginx_start
+    elif hasconfig; then
+       echo "`date`: Reloading Nginx " 1>&2
+        ${NGINX_EXEC} -c ${NGINX_CONFIG_FILE} -s reload 2>&1
+    fi
+}
+
 function _nginx_stop() {
     [ -f "${OPENSHIFT_NGINX_PID}" ] && pid=$( /bin/cat "${OPENSHIFT_NGINX_PID}" )
 
     # Check pid file
     if `ps -p ${pid} > /dev/null 2>&1`; then
         if hasconfig; then
-            ${NGINX_EXEC} -c ${NGINX_CONFIG_FILE} -p ${OPENSHIFT_NGINX_DIR} -s stop  2>&1
+            ${NGINX_EXEC} -c ${NGINX_CONFIG_FILE} -p ${OPENSHIFT_NGINX_DIR} -s stop 2>&1
         else
             /bin/kill -9 ${pid}
         fi
@@ -94,19 +114,28 @@ function _nginx_update_conf() {
 }
 
 function start() {
-    if isrunning; then
-        _nginx_stop
-    fi
+    if hot_deploy_marker_is_present && isrunning; then
+        _nginx_update_conf
+        _nginx_reload
+        isrunning && echo "Nginx instance reloaded"
+    else
+        if isrunning; then
+            _nginx_stop
+        fi
 
-    _nginx_update_conf
-    _nginx_start
-    isrunning && echo "Nginx instance is started"
+        _nginx_update_conf
+        _nginx_start
+        isrunning && echo "Nginx instance is started"
+    fi
 }
 
 
 function stop() {
-    _nginx_stop
-    isrunning  ||  echo "Nginx instance is stopped"
+    if hot_deploy_marker_is_present; then
+    else
+        _nginx_stop
+        isrunning  ||  echo "Nginx instance is stopped"
+    fi
 }
 
 

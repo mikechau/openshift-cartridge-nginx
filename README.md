@@ -4,7 +4,7 @@ Based on [boekkooi/openshift-cartridge-nginx](https://github.com/boekkooi/opensh
 
 ## Installation
 ```BASH
-rhc create-app myapp http://cartreflect-claytondev.rhcloud.com/github/asox/openshift-cartridge-nginx
+rhc create-app myapp http://cartreflect-claytondev.rhcloud.com/github/mikechau/openshift-cartridge-nginx
 ```
 
 ## Versions
@@ -16,7 +16,7 @@ If you need another version you can compile it yourself.
 ### Compiling a new version
 To compile a new version you will first need a openshift application.
 ```BASH
-rhc create-app nginx http://cartreflect-claytondev.rhcloud.com/github/asox/openshift-cartridge-nginx
+rhc create-app nginx http://cartreflect-claytondev.rhcloud.com/github/mikechau/openshift-cartridge-nginx
 ```
 
 Now clone the repository and create a `nginx` folder. Now copy the `usr/compile` directory from [this](https://github.com/asox/openshift-cartridge-nginx) repository.

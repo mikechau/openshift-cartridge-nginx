@@ -3,9 +3,9 @@ Cartridge-Short-Name: NGINX
 Display-Name: Nginx
 Version: "1.8.0"
 Versions: ["1.8.0"]
-Website: https://github.com/asox/openshift-cartridge-nginx
+Website: https://github.com/mikechau/openshift-cartridge-nginx
 Cartridge-Version: 0.0.1
-Cartridge-Vendor: asox
+Cartridge-Vendor: mikechau
 Categories:
   - web_framework
   - service

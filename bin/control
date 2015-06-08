@@ -114,29 +114,19 @@ function _nginx_update_conf() {
 }
 
 function start() {
-    if hot_deploy_marker_is_present && isrunning; then
-        _nginx_update_conf
-        _nginx_reload
-        isrunning && echo "Nginx instance reloaded"
-    else
-        if isrunning; then
-            _nginx_stop
-        fi
-
-        _nginx_update_conf
-        _nginx_start
-        isrunning && echo "Nginx instance is started"
+    if isrunning; then
+        _nginx_stop
     fi
+
+    _nginx_update_conf
+    _nginx_start
+    isrunning && echo "Nginx instance is started"
 }
 
 
 function stop() {
-    if hot_deploy_marker_is_present; then
-        :
-    else
-        _nginx_stop
-        isrunning  ||  echo "Nginx instance is stopped"
-    fi
+    _nginx_stop
+    isrunning  ||  echo "Nginx instance is stopped"
 }
 
 
@@ -176,10 +166,12 @@ function tidy() {
 
 function update() {
     _nginx_update_conf
+    _nginx_reload
 }
 
 function build() {
     _nginx_update_conf
+    _nginx_reload
 }
 
 case "$1" in

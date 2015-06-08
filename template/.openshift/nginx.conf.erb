@@ -18,6 +18,8 @@ index index.php index.html index.htm;
 # }
 
 server {
+  access_log logs/static.log;
+
   # The host name to respond to
   # server_name localhost;
 
@@ -45,5 +47,18 @@ server {
     # fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     # fastcgi_split_path_info ^(.+\.php)(/.+)$;
     # fastcgi_pass unix:<%= ENV['OPENSHIFT_PHP_SOCKET'] %>;
+  }
+
+  location /status/ {
+    access_log off;
+
+    add_header Pragma private;
+    add_header Cache-Control "no-store, no-cache, must-revalidate";
+    add_header Last-Modified "";
+    if_modified_since off;
+    expires off;
+
+    try_files $uri = 404;
+    error_page 404 /404.html;
   }
 }

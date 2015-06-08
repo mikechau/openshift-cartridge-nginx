@@ -49,7 +49,7 @@ server {
     # fastcgi_pass unix:<%= ENV['OPENSHIFT_PHP_SOCKET'] %>;
   }
 
-  location /status/ {
+  location /status {
     access_log off;
 
     add_header Pragma private;

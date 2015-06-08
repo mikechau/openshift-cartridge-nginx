@@ -24,7 +24,6 @@ events {
   # are generally faster than the default (select(2))
   use epoll; # enable for Linux 2.6+
   # use kqueue; # enable for *BSD (FreeBSD, OS X, ..)
-  use epoll;
   accept_mutex on;
 }
 

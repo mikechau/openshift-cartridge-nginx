@@ -10,17 +10,6 @@ NGINX_EXEC=${OPENSHIFT_NGINX_VERSION_DIR}/sbin/nginx
 NGINX_CONFIG_FILE=${OPENSHIFT_NGINX_DIR}/conf/nginx.conf
 NGINX_HTTP_CONFIG_FILE=${OPENSHIFT_NGINX_DIR}/conf/nginx_http.conf
 
-
-# Checks for the presence of the user-specified hot_deploy marker in the app
-# repo. Returns 0 if the marker is present, otherwise 1.
-function hot_deploy_marker_is_present {
-  if [ -f "${OPENSHIFT_REPO_DIR}/.openshift/markers/hot_deploy" ]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 function isrunning() {
     if [ -f "${OPENSHIFT_NGINX_PID}" ]; then
         local pid=`cat ${OPENSHIFT_NGINX_PID} 2> /dev/null`

@@ -132,6 +132,7 @@ function start() {
 
 function stop() {
     if hot_deploy_marker_is_present; then
+        :
     else
         _nginx_stop
         isrunning  ||  echo "Nginx instance is stopped"
